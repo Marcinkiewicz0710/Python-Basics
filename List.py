@@ -17,4 +17,4 @@ l = list(set(l))
 l.insert(<index>, <element>)
 
 # Count the number of an element in the list
-<list>.count(<element>)
+l.count(<element>)
