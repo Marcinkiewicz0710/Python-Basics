@@ -1,0 +1,2 @@
+# Inverse String
+s = 
