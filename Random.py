@@ -27,7 +27,9 @@ random.randrange(n)
 # Even integer from 0 to 100
 random.randrange(0,101,2)
 
-# Geometric distribution:
+# Geometric distribution
+# The probability mass function of the geometric distribution is
+# f(n) = p*(1-p)^{n-1}
 z = np.random.geometric(p=0.35, size=10000)
 (z == 1).sum() / 10000. # The number of trials succeeded after a single run
 
