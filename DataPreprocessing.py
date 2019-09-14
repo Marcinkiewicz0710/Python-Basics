@@ -35,3 +35,33 @@ sns.barplot(x=missing_val.index.values, y=missing_val.values * 100, palette="Red
 plt.title("Percentage of missing values in train & test");
 plt.ylabel("%");
 plt.xticks(rotation=90)
+
+# Get categorical data, usually 'object' type
+cat_candidates = combined.dtypes[combined.dtypes=="object"].index.values
+frequencies = []
+# Check the most frequent category within each categorical data
+for col in cat_candidates:
+    overall_freq = combined.loc[:, col].value_counts().max() / combined.shape[0]
+    frequencies.append([col, overall_freq])
+# Turn the list 'frequencies' into a DataFrame
+frequencies = np.array(frequencies)
+freq_df = pd.DataFrame(index=frequencies[:,0], data=frequencies[:,1], columns=["frequency"])
+# Change the type of the Data in a DataFrame
+freq_df.frequency = freq_df.frequency.astype(np.float)
+# Remove the categorical data such that one type of category is too frequent (>90%)
+cats_to_drop = freq_df[freq_df.frequency >= 0.9].index.values
+combined = combined.drop(cats_to_drop, axis=1)
+
+# Plot the frequencies in ascending order with sns.barplot
+sorted_freq = freq_df.frequency.sort_values(ascending=False)
+plt.figure(figsize=(20,5))
+sns.barplot(x=sorted_freq.index[0:30], y=sorted_freq[0:30].astype(np.float))
+plt.xticks(rotation=90)
+
+# Check the less frequent category within the remaining categorical data
+cat_candidates = combined.dtypes[combined.dtypes=="object"].index.values
+min_frequency = pd.Series(index=cat_candidates)
+for col in cat_candidates:
+    min_frequency[col] = combined.loc[:,col].value_counts().min() / combined.shape[0]
+
+
