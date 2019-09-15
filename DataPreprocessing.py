@@ -165,3 +165,33 @@ df.age = pd.cut(df.age, bucket, labels=['child','adult','old'])
 
 
 
+#######################################################
+#                   Data Selection                    #
+#######################################################
+# To see visually if a categorical predictor is useful using sns.boxplot
+var = 'CentralAir'
+data = pd.concat([data_train['SalePrice'], data_train[var]], axis=1)
+plt.figure(figsize=(20,5))
+sns.boxplot(x=var, y="SalePrice", data=data)
+plt.axis(ymin=0, ymax=800000)
+
+# To see visually if a numerical predictor is useful using scatter
+var = 'YearBuilt'
+data = pd.concat([data_train['SalePrice'], data_train[var]], axis=1)
+data.plot.scatter(x=var, y="SalePrice", ylim=(0, 800000))
+
+# Data correlation
+corrmap = train.corr()
+plt.figure(figsize=(20,20))
+sns.heatmap(corrmap, vmax=0.8, square=True)
+
+k  = 10 # 关系矩阵中将显示10个特征
+# corrmat.nlargest(k, 'SalePrice') will return a k*n correlation matrix
+cols = corrmat.nlargest(k, 'SalePrice')['SalePrice'].index
+cm = np.corrcoef(train[cols].values.T)
+sns.set(font_scale=1.25)
+sns.heatmap(cm, cbar=True, annot=True, \
+                 square=True, fmt='.2f', annot_kws={'size': 10}, yticklabels=cols.values, xticklabels=cols.values)
+plt.show()
+
+
