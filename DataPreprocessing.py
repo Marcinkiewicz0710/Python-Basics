@@ -77,5 +77,9 @@ cat_candidates = combined.dtypes[combined.dtypes=="object"].index.values
 min_frequency = pd.Series(index=cat_candidates)
 for col in cat_candidates:
     min_frequency[col] = combined.loc[:,col].value_counts().min() / combined.shape[0]
-
+def cut_levels(x, threshold, new_value):
+    value_counts = x.value_counts()
+    labels = value_counts.index[value_counts < threshold]
+    x[np.in1d(x, labels)] = new_value
+cut_levels(data.class, 30, 'others')
 
