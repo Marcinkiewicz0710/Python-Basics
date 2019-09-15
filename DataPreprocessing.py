@@ -77,9 +77,38 @@ cat_candidates = combined.dtypes[combined.dtypes=="object"].index.values
 min_frequency = pd.Series(index=cat_candidates)
 for col in cat_candidates:
     min_frequency[col] = combined.loc[:,col].value_counts().min() / combined.shape[0]
+
+# Helper function: combine low frequent level given a threshold
+## .isin() returns a DataFrame of booleans showing whether each element in the DataFrame is contained in values.
 def cut_levels(x, threshold, new_value):
     value_counts = x.value_counts()
     labels = value_counts.index[value_counts < threshold]
-    x[np.in1d(x, labels)] = new_value
-cut_levels(data.class, 30, 'others')
+    x[x.isin(labels)] = new_value
+cut_levels(data.<col>, 30, 'others')
+
+
+
+
+#######################################################
+# Create Numerical Representation of Categorical Data #
+#######################################################
+# Method 1: (if the data is float but written in string)
+## errors='coerce' will replace any non float data by NaN
+## errors='ignore' will leave those which are not float type
+pd.to_numeric(df.<col>, errors='coerce').fillna(0)
+
+# Method 2: (use category data type)
+## Use category type will reduce memory use, make DataFrame faster
+df[<col>] = df[<col>].astype('category').cat.codes
+## We can also specify in which order each category is encoded
+df[<col>] = df[<col>].astype('category', categories=['unknown','man','woman'], ordered=True)
+
+# Method 3: (Encode one category as 1 and the rest 0)
+## str.contains(): Return boolean Series or Index based on whether a given pattern or regex is contained within a string of a Series or Index.
+df[<col>] = np.where(df[<col>].str.contains('US'))
+
+
+
+
+
 
