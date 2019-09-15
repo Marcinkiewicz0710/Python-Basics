@@ -24,6 +24,16 @@ combined = train.drop("SalePrice", axis=1).append(test)
 
 
 ######################################################
+#          Transformation of the Data                #
+######################################################
+# With apply
+df['A'].apply(np.log)
+# Normalization
+df['A'] = (df.A-df.A.mean())/df.A.std()
+# Min-Max Normalization
+df['A'] = (df.A-df.A.min())/(df.A.max()-df.A.min())
+
+######################################################
 #     Compute the Pourcentage of missing data        #
 ######################################################
 ## isnull() return a DataFrame of True/False, indicating whether a data is missing
@@ -145,7 +155,13 @@ df[<col>] = df[<col>].astype('category', categories=['unknown','man','woman'], o
 df[<col>] = np.where(df[<col>].str.contains('US'))
 
 
-
+#######################################################
+#         Discretization of Continuous Data           #
+#######################################################
+# Define the bucket of interval
+bucket = [0, 15, 55, 100]
+# Relabel the different categories
+df.age = pd.cut(df.age, bucket, labels=['child','adult','old'])
 
 
 
