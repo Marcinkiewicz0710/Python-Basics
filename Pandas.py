@@ -29,7 +29,7 @@ df.A = list(range(len(df.indx)))
 ## select all the rows such that df.A>0
 df = df.loc[lambda df: df['A']>0, :]  # Access a group of rows and columns by label(s) or a boolean array.
 ## select only the columns A and B
-df = df.loc[: lambda df: ['A','B']]
+df = df.loc[:, lambda df: ['A','B']]
 ## for series
 df = df.loc[lambda s: s>0]
 
