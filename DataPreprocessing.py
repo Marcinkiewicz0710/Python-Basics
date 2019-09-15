@@ -10,6 +10,9 @@ test = pd.read_csv("test.csv", index_col=0)
 train.head()
 test.head() 
 
+######################################################
+#     Check Data Distribution using Histogram        #
+######################################################
 # Plot the histogram of a column's data using seaborn
 plt.figure(figsize=(20,5))
 sns.distplot(train.SalePrice, color="tomato")
@@ -19,7 +22,10 @@ plt.ylabel("Density")
 # Define the combined train/test dataset for Proprocessing
 combined = train.drop("SalePrice", axis=1).append(test)
 
-# Check the percentage of missing data
+
+######################################################
+#     Compute the Pourcentage of missing data        #
+######################################################
 ## isnull() return a DataFrame of True/False, indicating whether a data is missing
 ## sum() return a DataFrame of the sum of each column 
 ## sort_values(by=<column/axis_name>, axis=0, ascending=True, inplace=False)
@@ -36,6 +42,10 @@ plt.title("Percentage of missing values in train & test");
 plt.ylabel("%");
 plt.xticks(rotation=90)
 
+
+######################################################
+#          Categorical Data Preprocessing            #
+######################################################
 # Get categorical data, usually 'object' type
 cat_candidates = combined.dtypes[combined.dtypes=="object"].index.values
 frequencies = []
