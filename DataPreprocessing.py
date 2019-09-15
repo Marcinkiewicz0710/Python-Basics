@@ -44,7 +44,7 @@ plt.xticks(rotation=90)
 
 
 ######################################################
-#          Categorical Data Preprocessing            #
+#          Remove Useless Categorical Data           #
 ######################################################
 # Get categorical data, usually 'object' type
 cat_candidates = combined.dtypes[combined.dtypes=="object"].index.values
@@ -68,6 +68,10 @@ plt.figure(figsize=(20,5))
 sns.barplot(x=sorted_freq.index[0:30], y=sorted_freq[0:30].astype(np.float))
 plt.xticks(rotation=90)
 
+
+######################################################
+#  Combine low frequent Levels of Categorical Data   #
+######################################################
 # Check the less frequent category within the remaining categorical data
 cat_candidates = combined.dtypes[combined.dtypes=="object"].index.values
 min_frequency = pd.Series(index=cat_candidates)
