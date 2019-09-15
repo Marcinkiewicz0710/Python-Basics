@@ -44,6 +44,21 @@ plt.xticks(rotation=90)
 
 
 ######################################################
+#               Handling Missing Data                #
+######################################################
+# Drop all the columns containing more than 2 NaN
+df.dropna(axis=1, how='all', thresh=2, inplace=True)
+# Fill the missing data with predefined value at each column
+df.fillna({'A':0, 'B':0, 'C':'Unknown'}, inplace=True)
+# Fill the missing data with mean/median
+df.fillna(df.mean(), inplace=True)
+# Replace values
+df.replace(-99, np.nan)
+# Map some categorical data in a column to some specific values (the rest is filled with NaN)
+df['Gender_numeric'] = df.Gender.map(<'Man':1, 'Woman':0>)
+
+
+######################################################
 #          Remove Useless Categorical Data           #
 ######################################################
 # Get categorical data, usually 'object' type
@@ -68,6 +83,30 @@ plt.figure(figsize=(20,5))
 sns.barplot(x=sorted_freq.index[0:30], y=sorted_freq[0:30].astype(np.float))
 plt.xticks(rotation=90)
 
+###             Don't forget numerical categorical data            ###
+### Perform the same operations to remove useless categorical data ###
+num_candicates = combined.dtypes[combined.dtypes!=object].index.values
+# Get the numerical categorical data
+next_cat_candidates = [
+    "OverallQual", "OverallCond", "MSSubClass", 'BsmtFullBath',
+    'BsmtHalfBath','FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr',
+    'TotRmsAbvGrd', 'Fireplaces', 'GarageCars'
+]
+frequencies = []
+for col in next_cat_candidates:
+    overall_freq = combined.loc[:, col].value_counts().max() / combined.shape[0]
+    frequencies.append([col, overall_freq])
+frequencies = np.array(frequencies)
+freq_df = pd.DataFrame(index=frequencies[:,0], data=frequencies[:,1], columns=["frequency"])
+sorted_freq = freq_df.frequency.sort_values(ascending=False)
+# Plot with barplot to see which categorical data is useless
+plt.figure(figsize=(20,5))
+sns.barplot(x=sorted_freq.index[0:30], y=sorted_freq[0:30].astype(np.float))
+plt.xticks(rotation=90)
+# Remove the ones that we do not desire
+cats_to_drop = ["KitchenAbvGr", "BsmtHalfBath"]
+combined = combined.drop(cats_to_drop, axis=1)
+
 
 ######################################################
 #  Combine low frequent Levels of Categorical Data   #
@@ -85,8 +124,6 @@ def cut_levels(x, threshold, new_value):
     labels = value_counts.index[value_counts < threshold]
     x[x.isin(labels)] = new_value
 cut_levels(data.<col>, 30, 'others')
-
-
 
 
 #######################################################
