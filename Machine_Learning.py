@@ -90,6 +90,9 @@ print(coef_dict_baseline)
 #################################################################
 import XGBoost as xgb
 from sklearn.metrics import mean_squared_error
+## For CLASSIFICATION use XGBClassifier()
+## For accuracy: from sklearn.metrics import accuracy_score
+## print("Accuracy for model: %.2f" % (accuracy_score(y_test, pred) * 100))
 xg_reg = xgb.XGBRegressor(objective ='reg:linear', 
 			  colsample_bytree = 0.3,  # percentage of features used per tree. High value can lead to overfitting
 			  learning_rate = 0.1,     # step size shrinkage used to prevent overfitting. Range is [0,1]
