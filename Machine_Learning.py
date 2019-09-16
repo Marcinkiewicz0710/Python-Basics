@@ -25,11 +25,11 @@ elastic = ElasticNet(normalize=False)
 # Use Cross Validation to Determine the best parameters
 search = GridSearchCV(estimator=elastic, 
 		      param_grid={'alpha':np.logspace(-5,2,8),'l1_ratio':[.2,.4,.6,.8]},
-		      scoring='neg_mean_squared_error',
-		      n_jobs=1,
-		      refit=True,
-		      cv=10
-		     )
+		      scoring='neg_mean_squared_error',          # ‘neg_mean_absolute_error’ or ‘accuracy’ or ‘roc_auc’or ‘r2’
+		      n_jobs=1,                                  # Number of jobs to run in parallel
+		      refit=True,                                # Refit an estimator using the best found parameters on the whole dataset
+		      cv=10                                      # Determines the cross-validation splitting strategy
+)
 search.fit(Train.drop('SalePrice', axis=1), Train.SalePrice)
 # Get the best estimator
 best = search.best_estimator_
@@ -47,7 +47,31 @@ print(coef_dict_baseline)
 #################################################################
 #                           XGBoost                             #
 #################################################################
-import XGBoost
+import XGBoost as xgb
+from sklearn.metrics import mean_squared_error
+xg_reg = xgb.XGBRegressor(objective ='reg:linear', 
+			  colsample_bytree = 0.3,  # percentage of features used per tree. High value can lead to overfitting
+			  learning_rate = 0.1,     # step size shrinkage used to prevent overfitting. Range is [0,1]
+                          max_depth = 5, 	   # determines how deeply each tree is allowed to grow during any boosting round
+			  alpha = 10,		   # L1 regularization on leaf weights
+			  lambda = 5, 		   # L2 regularization on leaf weights and is smoother than L1 regularization
+			  n_estimators = 10        # number of trees you want to build.
+)
+xg_reg.fit(X_train, y_train)
+preds = xg_reg.predict(X_test)
+rmse = np.sqrt(mean_squared_error(y_test, preds))
+print("RMSE: %f" % (rmse))
 
-
+# XGBoost with K-fold Cross Validation
+params = {"objective":"reg:linear",'colsample_bytree': 0.3,'learning_rate': 0.1,
+                'max_depth': 5, 'alpha': 10}
+cv_results = xgb.cv(dtrain=data_dmatrix,       
+		    params=params, 
+		    nfold=3,                   # number of cross validation sets you want to build
+                    num_boost_round=50,        # denotes the number of trees you build
+		    early_stopping_rounds=10,  # finishes training of the model early if the hold-out metric does not improve for a given number of rounds.
+		    metrics="rmse", 	       # tells the evaluation metrics to be watched during CV
+		    as_pandas=True,            # to return the results in a pandas DataFrame
+		    seed=123	               # for reproducibility of results
+)
 
