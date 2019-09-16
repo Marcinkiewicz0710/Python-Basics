@@ -21,7 +21,7 @@ for k in range(1,31):
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score, roc_curve
 
 # Linear Regression
 lin_reg = LinearRegression()
@@ -56,7 +56,19 @@ rf_predictions = forest.predict(test)
 # Probabilities for each class
 rf_probs = forest.predict_proba(test)[:, 1]
 roc_value = roc_auc_score(test_labels, rf_probs)
-	
+# AUC value
+roc_auc = auc(fpr, tpr)
+# Plot ROC
+fpr, tpr, threshold = roc_curve(test_labels, rf_probs)
+plt.title('Receiver Operating Characteristic')
+plt.plot(fpr, tpr, 'b', label = 'AUC = %0.2f' % roc_auc)
+plt.plot([0, 1], [0, 1],'r--')
+plt.xlim([0, 1])
+plt.ylim([0, 1])
+plt.ylabel('True Positive Rate')
+plt.xlabel('False Positive Rate')
+plt.show()
+
 
 #################################################################
 #                    Elastic Net Regression                     #
