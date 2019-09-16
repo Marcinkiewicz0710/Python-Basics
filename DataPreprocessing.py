@@ -178,7 +178,9 @@ plt.axis(ymin=0, ymax=800000)
 # To see visually if a numerical predictor is useful using scatter
 var = 'YearBuilt'
 data = pd.concat([data_train['SalePrice'], data_train[var]], axis=1)
-data.plot.scatter(x=var, y="SalePrice", ylim=(0, 800000))
+plt.scatter(data[var], data["SalePrice"])
+sns.regplot(x=var, y='SalePrice', scatter=False, color='Red')
+plt.axis(ymin=0, ymax=800000)
 
 # Data correlation
 corrmap = train.corr()
