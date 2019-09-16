@@ -23,7 +23,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import roc_auc_score, roc_curve
 
-# Linear Regression
+# Linear Regression (For CLASSIFICATION use LogisticRegression)
 lin_reg = LinearRegression()
 rMSE = cross_val_score(lin_reg, x_train, x_test, cv=10, scoring='neg_mean_squared_error').mean()
 
